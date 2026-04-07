@@ -1,111 +1,20 @@
 # Ecommerce-Sales-data-Analysis-
+This project focuses on analyzing e-commerce sales and profit data using Python. The dataset was explored and transformed to extract meaningful business insights related to sales performance, product categories, customer segments, and time-based trends.
 
-import pandas as pd
-import numpy as np
-import plotly.express as px
-import plotly.graph_objects as go
-import plotly.io as pio
-import plotly.colors as colors
-pio.templates.default='plotly_white'
-data = pd.read_excel(r'D:\python files practice\python april first project\Samplee_Superstore.xlsx')
-print(data.head())
-print(data.describe())
-print(data.info())
+The analysis includes data cleaning, datetime conversion, feature engineering, and exploratory data analysis (EDA). Interactive visualizations were created using Plotly to better understand sales and profit patterns across different dimensions.
 
-#date converting
-data['Order Date'] = pd.to_datetime(data['Order Date'])
-data['Ship Date']=pd.to_datetime(data['Ship Date'])
-print(data.info())
-print(data.head())
+Key Analysis Performed
+- Monthly Sales Trend Analysis
+- Category-wise Sales Distribution
+- Sub-category Performance Analysis
+- Monthly Profit Analysis
+- Profit by Category and Sub-category
+- Customer Segment Analysis (Sales & Profit)
 
-#seprating month's, year and order date took for shipment 
-data['Order Month']=data['Order Date'].dt.month_name()
-data['Order Year']=data['Order Date'].dt.year
-data['Order week']=data['Order Date'].dt.day_of_week
-print(data.head())
-
-# Monthly sales analysis 
-monthly_data=data.groupby('Order Month')['Sales'].sum().reset_index()
-print(monthly_data)
-fix= px.line(monthly_data,
-             x='Order Month',
-             y='Sales',
-             title='Monthly sales Analysis')
-print(fix.show())
-
-'''November recorded the highest sales (₹271,693.75), while February had the lowest sales (₹132,721.36).
-'''
-
-#2nd higest and lowest sales on the bases of product categories 
-
-category_sales= data.groupby('Category')['Sales'].sum().reset_index()
-print(category_sales)
-fig = px.pie(
-    category_sales,
-    names='Category',
-    values='Sales',
-    title='Sales Distribution by City'
-)
-
-fig.update_traces(textposition='inside', textinfo='percent+label')
-title_font=dict(size=24)
-fig.show()
-
-''' Technology have the higest sales ( 836154.0330) , while Office Supplies had lowest supply that is (719047.0320) '''
-  
-  #3rd question 
-sub_category_sales=data.groupby('Sub-Category')['Sales'].sum().reset_index()
-print(sub_category_sales)
-fix=px.bar(sub_category_sales,
-           x='Sub-Category',
-           y='Sales',
-           title='Sub category sales'
-           )
-fix.show()
-
-''' Phone have the higest sales (330007.0540), and lowest is Fasteners(3024.2800)'''
-
-#4th Monthly profit by category from the sales 
-monthly_profit=data.groupby('Order Month')['Profit'].sum().sort_values(ascending=True).reset_index()
-print(monthly_profit)
-fix = px.line(monthly_profit,
-              x='Order Month',
-              y='Profit',
-              title='monthly profits'
-              )
-fix.show()
-
-'''September recorded the highest sales (₹34554.8774), while July had the lowest sales (₹10008.6488)'''
-
-#5th Profit by category and sub category 
-profit_category_sub_cate=data.groupby(['Category','Sub-Category'])['Profit'].sum().reset_index()
-print(profit_category_sub_cate)
-fix=px.bar(profit_category_sub_cate,
-                 x='Category',
-                 y='Profit',
-                 color='Sub-Category',
-                 barmode='group',
-                 title='Category and sub-category Profit'
-
-)
-fix.show()
-'''Furniture (Chair have the higest sales (26590.1663) and lowest sales is Tables(-17725.4811) )
-   Office Supplies(Paper have the higest sales (34053.5693) and lowest sales is Supplies(-1189.0995))
-   Technology (Copiers have the higest sales (55617.8249) and lowest sales is Machines(3384.7569))
-     '''
-#6th Analyse the sales and profit by customer segment 
-customer_segment_profit_sales=data.groupby('Segment').agg({'Sales':'sum','Profit':'sum'}).reset_index()
-print(customer_segment_profit_sales)
-# Use 'fig' instead of 'fix'
-fig = px.bar(customer_segment_profit_sales,
-             x='Segment', 
-             y=['Sales','Profit'], 
-             barmode='group',
-             title='Segment wise Profit and Sales'
-            )
-
-fig.show()
-
-'''Higest sales is in Cunsumer segment (1.161401 M ) and profit also in Consumer (134119.2092) 
-'''
-
+Key Insights
+- November recorded the highest sales, while February had the lowest sales, indicating seasonal trends.
+- Technology category generated the highest revenue, whereas Office Supplies contributed the least.
+- Phones were the top-performing sub-category, while Fasteners had minimal sales.
+- Profit trends showed variability across months, with September being the most profitable.
+- Certain sub-categories like Tables resulted in negative profit, highlighting potential business risks.
+- The Consumer segment contributed the highest sales and profit among all customer segments.
